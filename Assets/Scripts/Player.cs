@@ -11,6 +11,8 @@ public class Player : MonoBehaviour
     // [SerializeField] - allows the variable to still be private, but seen in the Unity editor
     [SerializeField]
     private float _speed = 3.5f; // _ means private
+    [SerializeField]
+    private GameObject _laserPrefab;
 
     // Start is called before the first frame update
     void Start()
@@ -23,6 +25,13 @@ public class Player : MonoBehaviour
     void Update()
     {
         CalculateMovement();
+
+        // if I hit space key, spawn or (initiate) gameObject
+
+        if (Input.GetKeyDown(KeyCode.Space))
+        {                                              // Quaternion.identity = default rotation
+            Instantiate(_laserPrefab, transform.position, Quaternion.identity);
+        };
     }
 
     void CalculateMovement()
