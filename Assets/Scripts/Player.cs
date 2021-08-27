@@ -15,16 +15,30 @@ public class Player : MonoBehaviour
     private GameObject _laserPrefab;
     [SerializeField]
     private float _fireRate = 0.5f;
+    [SerializeField]
+    private GameObject _tripShotPrefab;
     // sets the can fire less than Time.time
     private float _canFire = -1f;
     [SerializeField]
     private int _lives = 3;
 
-    // Start is called before the first frame update
-    void Start()
+    private bool _isDead = false;
+    private SpawnManager _spawnManager;
+
+    [SerializeField]
+    private bool _trippleShot = false;
+
+// Start is called before the first frame update
+void Start()
     {
         // Take the current position = new Position(0, 0, 0)
         transform.position = new Vector3(0, 0, 0);
+        // how to get access to the spawn manager script
+        _spawnManager = GameObject.Find("Spawn_Manager").GetComponent<SpawnManager>(); 
+        if(_spawnManager == null)
+        {
+            Debug.LogError("The Spawn Manager is Null.");
+        }
     }
 
     // Update is called once per frame
@@ -71,7 +85,15 @@ public class Player : MonoBehaviour
     {
         // Sets _canFire to the current time and fireRate, which allows the if statement above to be able to impliment at our fireRate
         _canFire = Time.time + _fireRate;                           // Quaternion.identity = default rotation
-        Instantiate(_laserPrefab, transform.position + new Vector3(0, 0.8f, 0), Quaternion.identity);
+
+        if (_trippleShot == true)
+        {
+            Instantiate(_tripShotPrefab, transform.position, Quaternion.identity);
+        }
+        else
+        {
+            Instantiate(_laserPrefab, transform.position + new Vector3(0, 1f, 0), Quaternion.identity);
+        }
 
     }
     public void Damage()
@@ -82,7 +104,22 @@ public class Player : MonoBehaviour
         // Destroy us
         if(_lives < 1)
         {
+            _spawnManager.onPlayerDeath();
+            // Communicate with Spawn Manager
             Destroy(this.gameObject);
         }
+    }
+
+    public void TrippleShotActive()
+    {
+        _trippleShot = true;
+        StartCoroutine(TrippleShotPowerDown());
+    }
+
+    IEnumerator TrippleShotPowerDown()
+    {
+        yield return new WaitForSeconds(5.0f);
+        _trippleShot = false;
+
     }
 }
