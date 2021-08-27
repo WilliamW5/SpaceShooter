@@ -12,21 +12,27 @@ public class Player : MonoBehaviour
     [SerializeField]
     private float _speed = 3.5f; // _ means private
     [SerializeField]
-    private GameObject _laserPrefab;
+    private float _speedBoostMod = 2f;
     [SerializeField]
     private float _fireRate = 0.5f;
-    [SerializeField]
-    private GameObject _tripShotPrefab;
+
     // sets the can fire less than Time.time
     private float _canFire = -1f;
     [SerializeField]
     private int _lives = 3;
 
+    private bool _speedBoost = false;
+    private bool _trippleShot = false;
+    [SerializeField]
+    private bool _isShieldActive = false;
     private bool _isDead = false;
+
     private SpawnManager _spawnManager;
 
     [SerializeField]
-    private bool _trippleShot = false;
+    private GameObject _laserPrefab;
+    [SerializeField]
+    private GameObject _tripShotPrefab;
 
 // Start is called before the first frame update
 void Start()
@@ -51,7 +57,6 @@ void Start()
         if (Input.GetKeyDown(KeyCode.Space) && Time.time > _canFire)
         {
             FireLaser();
-
         }
 
     }
@@ -62,6 +67,7 @@ void Start()
         float verticalInput = Input.GetAxis("Vertical");
 
         Vector3 direction = new Vector3(horizontalInput, verticalInput, 0);
+
         transform.Translate(direction * _speed * Time.deltaTime);
 
         float _xMax = 11.26f;
@@ -98,11 +104,15 @@ void Start()
     }
     public void Damage()
     {
-        _lives -= 1;
-
+        if (_isShieldActive == true)
+        {
+            _isShieldActive = false;
+            return;
+        }
+        _lives--;
         // Check if dead
         // Destroy us
-        if(_lives < 1)
+        if (_lives < 1)
         {
             _spawnManager.onPlayerDeath();
             // Communicate with Spawn Manager
@@ -120,6 +130,24 @@ void Start()
     {
         yield return new WaitForSeconds(5.0f);
         _trippleShot = false;
+    }
 
+    public void SpeedBoostActive()
+    {
+        _speedBoost = true;
+        _speed *= _speedBoostMod;
+        StartCoroutine(SpeedBoostPowerDown());
+    }
+
+    IEnumerator SpeedBoostPowerDown()
+    {
+        yield return new WaitForSeconds(5.0f);
+        _speedBoost = false;
+        _speed /= _speedBoostMod;
+    }
+
+    public void ShieldActive()
+    {
+        _isShieldActive = true;
     }
 }

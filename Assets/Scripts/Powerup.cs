@@ -5,7 +5,13 @@ using UnityEngine;
 public class Powerup : MonoBehaviour
 {
     [SerializeField]
-    private float _speed = 3.0f;
+    private float _speed =3.0f;
+    // 0 = Trippleshot
+    // 1 = Speed
+    // 2 = Shield
+    [SerializeField]
+    private int powerupID; 
+
 
     // Update is called once per frame
     void Update()
@@ -30,10 +36,27 @@ public class Powerup : MonoBehaviour
         {
             // handle to the component
             Player player = other.transform.GetComponent<Player>();
+
+
             if (player != null)
             {
-                player.TrippleShotActive();
+                switch(powerupID)
+                {
+                    case 0:
+                        player.TrippleShotActive();
+                        break;
+                    case 1:
+                        player.SpeedBoostActive();
+                        break;
+                    case 2:
+                        player.ShieldActive();
+                        break;
+                    default:
+                        Debug.LogError("Powerup does not exist");
+                        break;
+                }
             }
+            
             Destroy(this.gameObject);
         }
         
