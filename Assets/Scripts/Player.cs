@@ -13,6 +13,9 @@ public class Player : MonoBehaviour
     private float _speed = 3.5f; // _ means private
     [SerializeField]
     private GameObject _laserPrefab;
+    [SerializeField]
+    private float _fireRate = 0.5f;
+    private float _canFire = -1f;
 
     // Start is called before the first frame update
     void Start()
@@ -26,12 +29,14 @@ public class Player : MonoBehaviour
     {
         CalculateMovement();
 
-        // if I hit space key, spawn or (initiate) gameObject
 
-        if (Input.GetKeyDown(KeyCode.Space))
-        {                                              // Quaternion.identity = default rotation
-            Instantiate(_laserPrefab, transform.position, Quaternion.identity);
-        };
+        // if I hit space key, spawn or (initiate) gameObject
+        if (Input.GetKeyDown(KeyCode.Space) && Time.time > _canFire)
+        {
+            FireLaser();
+
+        }
+
     }
 
     void CalculateMovement()
@@ -57,5 +62,13 @@ public class Player : MonoBehaviour
             // _xMax allows the wrap around effect 
             transform.position = new Vector3(_xMax, transform.position.y, 0);
         }
+    }
+
+    void FireLaser()
+    {
+        // Sets _canFire to the current time and fireRate, which allows the if statement above to be able to impliment at our fireRate
+        _canFire = Time.time + _fireRate;                           // Quaternion.identity = default rotation
+        Instantiate(_laserPrefab, transform.position + new Vector3(0, 0.8f, 0), Quaternion.identity);
+
     }
 }
