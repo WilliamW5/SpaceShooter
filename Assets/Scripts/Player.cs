@@ -34,16 +34,29 @@ public class Player : MonoBehaviour
     [SerializeField]
     private GameObject _tripShotPrefab;
 
+    [SerializeField]
+    private GameObject shieldVisualizer;
+
+    [SerializeField]
+    private int _score = 0;
+
+    private UIManager _uiManager;
+
 // Start is called before the first frame update
 void Start()
     {
         // Take the current position = new Position(0, 0, 0)
         transform.position = new Vector3(0, 0, 0);
         // how to get access to the spawn manager script
-        _spawnManager = GameObject.Find("Spawn_Manager").GetComponent<SpawnManager>(); 
+        _spawnManager = GameObject.Find("Spawn_Manager").GetComponent<SpawnManager>();
+        _uiManager = GameObject.Find("Canvas").GetComponent<UIManager>();
         if(_spawnManager == null)
         {
-            Debug.LogError("The Spawn Manager is Null.");
+            Debug.LogError("The Spawn Manager is NULL.");
+        }
+        if( _uiManager == null)
+        {
+            Debug.LogError("The UI Manager is NULL");
         }
     }
 
@@ -107,9 +120,13 @@ void Start()
         if (_isShieldActive == true)
         {
             _isShieldActive = false;
+            // Disable Shields
+            shieldVisualizer.SetActive(false);
             return;
         }
         _lives--;
+        _uiManager.UpdateLives(_lives);
+
         // Check if dead
         // Destroy us
         if (_lives < 1)
@@ -149,5 +166,12 @@ void Start()
     public void ShieldActive()
     {
         _isShieldActive = true;
+        shieldVisualizer.SetActive(true);    
+    }
+
+    public void AddScore(int points)
+    {
+        _score += points;
+        _uiManager.UpdateScore(_score);
     }
 }
