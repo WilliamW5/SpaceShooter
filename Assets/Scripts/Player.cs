@@ -38,7 +38,14 @@ public class Player : MonoBehaviour
     private GameObject shieldVisualizer;
 
     [SerializeField]
+    private GameObject[] _engineDamage; // [0] - Right_Enginer    [1]- Left_Engine
+
+    [SerializeField]
     private int _score = 0;
+
+    [SerializeField]
+    private AudioClip _laserAudio;
+    private AudioSource _audioSource;
 
     private UIManager _uiManager;
 
@@ -50,7 +57,14 @@ void Start()
         // how to get access to the spawn manager script
         _spawnManager = GameObject.Find("Spawn_Manager").GetComponent<SpawnManager>();
         _uiManager = GameObject.Find("Canvas").GetComponent<UIManager>();
-        if(_spawnManager == null)
+        _audioSource = GetComponent<AudioSource>();
+
+        if(_audioSource == null)
+        {
+            Debug.LogError("The AudioSource(Player) is NULL.");
+        }
+
+        if (_spawnManager == null)
         {
             Debug.LogError("The Spawn Manager is NULL.");
         }
@@ -113,6 +127,8 @@ void Start()
         {
             Instantiate(_laserPrefab, transform.position + new Vector3(0, 1f, 0), Quaternion.identity);
         }
+        _audioSource.clip = _laserAudio;
+        _audioSource.Play();
 
     }
     public void Damage()
@@ -124,6 +140,8 @@ void Start()
             shieldVisualizer.SetActive(false);
             return;
         }
+        EngineDamageActive();
+
         _lives--;
         _uiManager.UpdateLives(_lives);
 
@@ -173,5 +191,17 @@ void Start()
     {
         _score += points;
         _uiManager.UpdateScore(_score);
+    }
+
+    private void EngineDamageActive()
+    {
+        if(_lives == 2)
+        {
+            _engineDamage[0].SetActive(true);
+        }
+        else
+        {
+            _engineDamage[1].SetActive(true);
+        }
     }
 }

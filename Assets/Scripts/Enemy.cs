@@ -9,10 +9,24 @@ public class Enemy : MonoBehaviour
 
     private Player _player;
 
+    private Animator _enemyExplosionAnimation;
+
+    private AudioSource _audioSource;
+
     // Start is called before the first frame update
     void Start()
     {
         _player = GameObject.Find("Player").GetComponent<Player>();
+        _audioSource = GetComponent<AudioSource>();
+        if (_player == null)
+        {
+            Debug.LogError("The Player is NULL;");
+        }
+        _enemyExplosionAnimation = gameObject.GetComponent<Animator>();
+        if (_enemyExplosionAnimation == null)
+        {
+            Debug.LogError("The EnemyExplosionAnimation is NULL;");
+        }
     }
 
     // Update is called once per frame
@@ -23,7 +37,6 @@ public class Enemy : MonoBehaviour
 
         // if bottom of screen
         // respawn at top
-
         if (transform.position.y  < -5f)
         {
             float randomX = Random.Range(-8f, 8f);
@@ -44,7 +57,10 @@ public class Enemy : MonoBehaviour
                 // damage player
                 player.Damage();
             }
-            Destroy(this.gameObject);
+            _enemyExplosionAnimation.SetTrigger("OnEnemyDeath");
+            _speed = 0;
+            _audioSource.Play();
+            Destroy(this.gameObject, 2.7f);
         }
 
         // if other is laser
@@ -58,8 +74,10 @@ public class Enemy : MonoBehaviour
             {
                 _player.AddScore(10);
             }
-            Destroy(this.gameObject);
+            _enemyExplosionAnimation.SetTrigger("OnEnemyDeath");
+            _speed = 0;
+            _audioSource.Play();
+            Destroy(this.gameObject, 2.7f);
         }
-
     }
 }
