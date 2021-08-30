@@ -13,8 +13,11 @@ public class SpawnManager : MonoBehaviour
 
     private bool _stopSpawning = false;
 
+    private Player player;
+
     public void StartSpawning()
     {
+        player = GameObject.Find("Player").GetComponent<Player>();
         StartCoroutine(SpawnRoutine());
         StartCoroutine(SpawnPowerupRoutine());
     }
@@ -33,8 +36,34 @@ public class SpawnManager : MonoBehaviour
             Vector3 posToSpawn = new Vector3(Random.Range(-8f, 8f), 7, 0);
             GameObject newEnemy = Instantiate(_enemyPrefab, posToSpawn, Quaternion.identity);
             newEnemy.transform.parent = _enemyContainer.transform;
-            yield return new WaitForSeconds(5.0f);
+
+            if (player._score < 50)
+            {
+                yield return new WaitForSeconds(5.0f);
+            }
+            else if (player._score > 50)
+            {
+                yield return new WaitForSeconds(4.0f);
+            }
+            else if (player._score > 100)
+            {
+                yield return new WaitForSeconds(3.0f);
+            }
+            else if (player._score > 150)
+            {
+                yield return new WaitForSeconds(2.0f);
+            }
+            else if (player._score > 200)
+            {
+                yield return new WaitForSeconds(1.0f);
+            }
+            else
+            {
+                yield return new WaitForSeconds(.5f);
+
+            }
         }
+
     }
 
     public void onPlayerDeath()

@@ -41,25 +41,40 @@ public class Player : MonoBehaviour
     private GameObject[] _engineDamage; // [0] - Right_Enginer    [1]- Left_Engine
 
     [SerializeField]
-    private int _score = 0;
+    public int _score = 0;
 
     [SerializeField]
     private AudioClip _laserAudio;
     private AudioSource _audioSource;
 
     private UIManager _uiManager;
+    private GameManager _gameManager;
 
 // Start is called before the first frame update
 void Start()
     {
-        // Take the current position = new Position(0, 0, 0)
-        transform.position = new Vector3(0, 0, 0);
         // how to get access to the spawn manager script
         _spawnManager = GameObject.Find("Spawn_Manager").GetComponent<SpawnManager>();
         _uiManager = GameObject.Find("Canvas").GetComponent<UIManager>();
+        _gameManager = GameObject.Find("Game_Manager").GetComponent<GameManager>();
         _audioSource = GetComponent<AudioSource>();
 
-        if(_audioSource == null)
+        if (_gameManager.isCoOpMod == false)
+        {
+            // Take the current position = new Position(0, 0, 0)
+            transform.position = new Vector3(0, 0, 0);
+        }
+        else
+        {
+
+        }
+
+        if(_gameManager == null)
+        {
+            Debug.LogError("The GameManager(Player) is NULL.");
+        }
+
+        if (_audioSource == null)
         {
             Debug.LogError("The AudioSource(Player) is NULL.");
         }
