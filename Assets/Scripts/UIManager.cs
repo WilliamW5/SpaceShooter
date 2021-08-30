@@ -66,4 +66,13 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    public void ResumeGame()
+    {
+        _gameManager.ResumeGame();
+    }
+
+    public void BackToMainMenu()
+    {
+        _gameManager.LoadMainMenu();
+    }
 }
