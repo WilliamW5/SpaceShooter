@@ -2338,6 +2338,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _scoreText: {fileID: 519805662}
+  _bestText: {fileID: 1141506070}
+  bestScore: 0
   _livesImg: {fileID: 400735030}
   _liveSprites:
   - {fileID: 21300000, guid: ba53e111f0125654cabfd4eefaf3a657, type: 3}
