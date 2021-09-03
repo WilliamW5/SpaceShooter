@@ -166,6 +166,7 @@ void Start()
         {
             _spawnManager.onPlayerDeath();
             // Communicate with Spawn Manager
+            _uiManager.CheckForBestScore();
             Destroy(this.gameObject);
         }
     }

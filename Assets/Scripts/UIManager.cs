@@ -8,6 +8,10 @@ public class UIManager : MonoBehaviour
     // Handle to Text
     [SerializeField]
     private Text _scoreText;
+    private int _score;
+    [SerializeField]
+    private Text _bestText;
+    public int bestScore;
 
     [SerializeField]
     private Image _livesImg; 
@@ -26,6 +30,8 @@ public class UIManager : MonoBehaviour
     {
         // Assign text component to handle
         _scoreText.text = "Score: " + 0;
+        bestScore = PlayerPrefs.GetInt("HighScore", 0);
+        _bestText.text = "Best: " + bestScore;
         _gameManager = GameObject.Find("Game_Manager").GetComponent<GameManager>();
         if(_gameManager == null)
         {
@@ -36,6 +42,17 @@ public class UIManager : MonoBehaviour
    public void UpdateScore(int playerScore)
     {
         _scoreText.text = "Score: " + playerScore.ToString();
+        _score = playerScore;
+    }
+
+    public void CheckForBestScore()
+    {
+        if (_score > bestScore)
+        {
+            bestScore = _score;
+            PlayerPrefs.SetInt("HighScore", bestScore);
+            _bestText.text = "Best: " + bestScore;
+        }
     }
 
     public void UpdateLives(int currentLives)
